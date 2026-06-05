@@ -32,10 +32,14 @@ const TEXT = {
     analyze: "분석 결과 보기",
     resultTitle: "분석 결과",
     yourChoice: "당신이 선택한 이론",
-    bestTheory: "근거상 가장 설명력이 높은 이론",
+    bestTheory: "가장 적합한 이론",
     evidenceMap: "수집한 근거와 이론의 연결",
-    sourceTitle: "관련 학자와 고전문헌",
+    sourceTitle: "참고문헌",
     noEvidence: "아직 수집한 근거가 없습니다.",
+    theoryWeight: "이론별 설명 비중",
+    appropriateChoice: "적절한 선택",
+    compareChoice: "다시 비교해볼 선택",
+    missedClues: "아직 확인하지 않은 단서",
   },
   en: {
     appTitle: "The Scholar's Library",
@@ -67,10 +71,14 @@ const TEXT = {
     analyze: "View Analysis",
     resultTitle: "Analysis Result",
     yourChoice: "Your Selected Theory",
-    bestTheory: "Most Explanatory Theory Based on Evidence",
-    evidenceMap: "How Each Evidence Connects to Theory",
-    sourceTitle: "Scholars and Classic Sources",
+    bestTheory: "Most Fitting Theory",
+    evidenceMap: "Evidence-Theory Connections",
+    sourceTitle: "References",
     noEvidence: "No evidence collected yet.",
+    theoryWeight: "Theory Weight",
+    appropriateChoice: "Appropriate Choice",
+    compareChoice: "Needs Comparison",
+    missedClues: "Unchecked Clues",
   },
 };
 
@@ -250,20 +258,8 @@ const CASE = {
             explanation:
               "보호자가 귀가 시간과 친구 관계를 확인하기 어려웠다는 점은 부모감독의 약화로 해석할 수 있습니다. 이는 사회유대이론에서 애착과 감독의 약화가 비행 가능성을 높일 수 있다는 설명과 연결됩니다.",
           },
-          {
-            id: "high_self_control",
-            label: "높은 자기통제력",
-            theory: "selfControl",
-            correct: false,
-            explanation: "",
-          },
-          {
-            id: "peer_reinforcement",
-            label: "또래 강화",
-            theory: "socialLearning",
-            correct: false,
-            explanation: "",
-          },
+          { id: "high_self_control", label: "높은 자기통제력", theory: "selfControl", correct: false },
+          { id: "peer_reinforcement", label: "또래 강화", theory: "socialLearning", correct: false },
         ],
       },
       school: {
@@ -279,20 +275,8 @@ const CASE = {
             explanation:
               "수업 흥미 저하, 결석 증가, 소속감 약화는 학교에 대한 몰입과 유대가 약해진 단서입니다. 이는 사회유대이론과 연결됩니다.",
           },
-          {
-            id: "formal_label",
-            label: "공식적 낙인",
-            theory: "labeling",
-            correct: false,
-            explanation: "",
-          },
-          {
-            id: "criminal_skill",
-            label: "범죄기술 학습",
-            theory: "socialLearning",
-            correct: false,
-            explanation: "",
-          },
+          { id: "formal_label", label: "공식적 낙인", theory: "labeling", correct: false },
+          { id: "criminal_skill", label: "범죄기술 학습", theory: "socialLearning", correct: false },
         ],
       },
       peer: {
@@ -308,20 +292,8 @@ const CASE = {
             explanation:
               "절도 경험이 있는 친구들과 어울리고, 그들과 함께 시간을 보내며 절도 방법을 알게 되었다는 점은 사회학습이론의 핵심 단서입니다.",
           },
-          {
-            id: "school_attachment",
-            label: "학교 애착 강화",
-            theory: "socialBond",
-            correct: false,
-            explanation: "",
-          },
-          {
-            id: "negative_emotion",
-            label: "부정적 감정",
-            theory: "generalStrain",
-            correct: false,
-            explanation: "",
-          },
+          { id: "school_attachment", label: "학교 애착 강화", theory: "socialBond", correct: false },
+          { id: "negative_emotion", label: "부정적 감정", theory: "generalStrain", correct: false },
         ],
       },
       labeling: {
@@ -337,20 +309,8 @@ const CASE = {
             explanation:
               "주변에서 자신을 문제학생으로 본다고 느끼는 경험은 낙인이론과 연결됩니다. 반복적인 부정적 규정은 자기인식과 행동 선택에 영향을 줄 수 있습니다.",
           },
-          {
-            id: "parental_monitoring",
-            label: "부모감독 강화",
-            theory: "socialBond",
-            correct: false,
-            explanation: "",
-          },
-          {
-            id: "low_opportunity",
-            label: "범죄 기회 부족",
-            theory: "rationalChoice",
-            correct: false,
-            explanation: "",
-          },
+          { id: "parental_monitoring", label: "부모감독 강화", theory: "socialBond", correct: false },
+          { id: "low_opportunity", label: "범죄 기회 부족", theory: "rationalChoice", correct: false },
         ],
       },
     },
@@ -374,8 +334,7 @@ const CASE = {
         scholar: "Robert Agnew",
         explanation:
           "좌절, 분노, 억울함 등 부정적 감정과 긴장이 비행으로 이어질 수 있다고 봅니다.",
-        source:
-          "Agnew, R. (1992). Foundation for a general strain theory of crime and delinquency.",
+        source: "Agnew, R. (1992). Foundation for a general strain theory of crime and delinquency.",
       },
       labeling: {
         name: "낙인이론",
@@ -389,8 +348,7 @@ const CASE = {
         scholar: "Gottfredson & Hirschi",
         explanation:
           "충동성, 즉각적 만족 추구, 장기적 결과 고려 부족을 중심으로 범죄를 설명합니다.",
-        source:
-          "Gottfredson, M. R., & Hirschi, T. (1990). A General Theory of Crime.",
+        source: "Gottfredson, M. R., & Hirschi, T. (1990). A General Theory of Crime.",
       },
     },
   },
@@ -407,19 +365,11 @@ const CASE = {
     interview: [
       { text: "The youth reported frequent conflict within the ", key: null },
       { text: "family", key: "family" },
-      {
-        text:
-          " since late elementary school. The guardian often returned home late due to financial pressure, making it difficult to monitor curfew and peer relationships. After entering middle school, the youth began to lose interest in ",
-        key: null,
-      },
+      { text: " since late elementary school. The guardian often returned home late due to financial pressure, making it difficult to monitor curfew and peer relationships. After entering middle school, the youth began to lose interest in ", key: null },
       { text: "school", key: "school" },
       { text: " life. Later, the youth spent more time with neighborhood ", key: null },
       { text: "peers", key: "peer" },
-      {
-        text:
-          ", some of whom had already experienced theft and truancy. The youth stated that they first learned how to steal while spending time with them. The youth also felt repeatedly treated as a ",
-        key: null,
-      },
+      { text: ", some of whom had already experienced theft and truancy. The youth stated that they first learned how to steal while spending time with them. The youth also felt repeatedly treated as a ", key: null },
       { text: "problem student", key: "labeling" },
       { text: " and said, 'No one believes in me anyway.'", key: null },
     ],
@@ -429,28 +379,9 @@ const CASE = {
         detail:
           "Parental conflict increased during late elementary school. The guardian often returned home late due to economic pressure, making it difficult to monitor curfew and peer relationships.",
         options: [
-          {
-            id: "weak_supervision",
-            label: "Weak parental supervision",
-            theory: "socialBond",
-            correct: true,
-            explanation:
-              "Difficulty monitoring curfew and peer relationships suggests weakened parental supervision. This connects to social bond theory.",
-          },
-          {
-            id: "high_self_control",
-            label: "High self-control",
-            theory: "selfControl",
-            correct: false,
-            explanation: "",
-          },
-          {
-            id: "peer_reinforcement",
-            label: "Peer reinforcement",
-            theory: "socialLearning",
-            correct: false,
-            explanation: "",
-          },
+          { id: "weak_supervision", label: "Weak parental supervision", theory: "socialBond", correct: true, explanation: "Difficulty monitoring curfew and peer relationships suggests weakened parental supervision. This connects to social bond theory." },
+          { id: "high_self_control", label: "High self-control", theory: "selfControl", correct: false },
+          { id: "peer_reinforcement", label: "Peer reinforcement", theory: "socialLearning", correct: false },
         ],
       },
       school: {
@@ -458,28 +389,9 @@ const CASE = {
         detail:
           "Tardiness and absenteeism increased. The teacher noted that the youth had lost interest in class and felt little belonging at school.",
         options: [
-          {
-            id: "school_commitment",
-            label: "Weak school commitment",
-            theory: "socialBond",
-            correct: true,
-            explanation:
-              "Loss of interest, absenteeism, and low belonging suggest weakened school commitment, which connects to social bond theory.",
-          },
-          {
-            id: "formal_label",
-            label: "Formal labeling",
-            theory: "labeling",
-            correct: false,
-            explanation: "",
-          },
-          {
-            id: "criminal_skill",
-            label: "Learning criminal skills",
-            theory: "socialLearning",
-            correct: false,
-            explanation: "",
-          },
+          { id: "school_commitment", label: "Weak school commitment", theory: "socialBond", correct: true, explanation: "Loss of interest, absenteeism, and low belonging suggest weakened school commitment, which connects to social bond theory." },
+          { id: "formal_label", label: "Formal labeling", theory: "labeling", correct: false },
+          { id: "criminal_skill", label: "Learning criminal skills", theory: "socialLearning", correct: false },
         ],
       },
       peer: {
@@ -487,28 +399,9 @@ const CASE = {
         detail:
           "Some of the youth's recent friends had histories of theft and truancy. The youth first learned how to steal while spending time with those peers.",
         options: [
-          {
-            id: "delinquent_peer",
-            label: "Contact with delinquent peers",
-            theory: "socialLearning",
-            correct: true,
-            explanation:
-              "Spending time with delinquent peers and learning how to steal directly connects to social learning theory.",
-          },
-          {
-            id: "school_attachment",
-            label: "Strong school attachment",
-            theory: "socialBond",
-            correct: false,
-            explanation: "",
-          },
-          {
-            id: "negative_emotion",
-            label: "Negative emotion",
-            theory: "generalStrain",
-            correct: false,
-            explanation: "",
-          },
+          { id: "delinquent_peer", label: "Contact with delinquent peers", theory: "socialLearning", correct: true, explanation: "Spending time with delinquent peers and learning how to steal directly connects to social learning theory." },
+          { id: "school_attachment", label: "Strong school attachment", theory: "socialBond", correct: false },
+          { id: "negative_emotion", label: "Negative emotion", theory: "generalStrain", correct: false },
         ],
       },
       labeling: {
@@ -516,28 +409,9 @@ const CASE = {
         detail:
           "At school, the youth was widely perceived as a problem student. The youth felt that teachers and peers already viewed them as bad.",
         options: [
-          {
-            id: "labeling_experience",
-            label: "Labeling experience",
-            theory: "labeling",
-            correct: true,
-            explanation:
-              "Being treated as a problem student can shape identity and behavior, which connects to labeling theory.",
-          },
-          {
-            id: "parental_monitoring",
-            label: "Strong parental monitoring",
-            theory: "socialBond",
-            correct: false,
-            explanation: "",
-          },
-          {
-            id: "low_opportunity",
-            label: "Lack of criminal opportunity",
-            theory: "rationalChoice",
-            correct: false,
-            explanation: "",
-          },
+          { id: "labeling_experience", label: "Labeling experience", theory: "labeling", correct: true, explanation: "Being treated as a problem student can shape identity and behavior, which connects to labeling theory." },
+          { id: "parental_monitoring", label: "Strong parental monitoring", theory: "socialBond", correct: false },
+          { id: "low_opportunity", label: "Lack of criminal opportunity", theory: "rationalChoice", correct: false },
         ],
       },
     },
@@ -545,39 +419,32 @@ const CASE = {
       socialLearning: {
         name: "Social Learning Theory",
         scholar: "Ronald Akers",
-        explanation:
-          "This theory fits when delinquent peers, learned techniques, and reinforcement are present.",
+        explanation: "This theory fits when delinquent peers, learned techniques, and reinforcement are present.",
         source: "Akers, R. L. (1998). Social Learning and Social Structure.",
       },
       socialBond: {
         name: "Social Bond Theory",
         scholar: "Travis Hirschi",
-        explanation:
-          "This theory fits when attachment, commitment, involvement, or belief are weakened.",
+        explanation: "This theory fits when attachment, commitment, involvement, or belief are weakened.",
         source: "Hirschi, T. (1969). Causes of Delinquency.",
       },
       generalStrain: {
         name: "General Strain Theory",
         scholar: "Robert Agnew",
-        explanation:
-          "This theory focuses on strain, anger, frustration, and negative emotions.",
-        source:
-          "Agnew, R. (1992). Foundation for a general strain theory of crime and delinquency.",
+        explanation: "This theory focuses on strain, anger, frustration, and negative emotions.",
+        source: "Agnew, R. (1992). Foundation for a general strain theory of crime and delinquency.",
       },
       labeling: {
         name: "Labeling Theory",
         scholar: "Howard Becker",
-        explanation:
-          "This theory focuses on how being labeled deviant can shape identity and behavior.",
+        explanation: "This theory focuses on how being labeled deviant can shape identity and behavior.",
         source: "Becker, H. S. (1963). Outsiders.",
       },
       selfControl: {
         name: "Self-Control Theory",
         scholar: "Gottfredson & Hirschi",
-        explanation:
-          "This theory explains crime through impulsivity and preference for immediate gratification.",
-        source:
-          "Gottfredson, M. R., & Hirschi, T. (1990). A General Theory of Crime.",
+        explanation: "This theory explains crime through impulsivity and preference for immediate gratification.",
+        source: "Gottfredson, M. R., & Hirschi, T. (1990). A General Theory of Crime.",
       },
     },
   },
@@ -585,74 +452,33 @@ const CASE = {
 
 const STATS_CARDS = {
   ko: [
-    {
-      title: "t검정",
-      question: "두 집단의 평균이 다른가?",
-      example: "남학생과 여학생의 자기통제력 평균 차이",
-    },
-    {
-      title: "상관분석",
-      question: "두 연속형 변수가 함께 변하는가?",
-      example: "비행친구 수와 비행빈도의 관계",
-    },
-    {
-      title: "회귀분석",
-      question: "한 변수가 다른 변수를 예측하는가?",
-      example: "부모감독이 비행빈도를 예측하는지 검증",
-    },
-    {
-      title: "로지스틱 회귀",
-      question: "결과변수가 0/1일 때 무엇이 영향을 미치는가?",
-      example: "후기비행 진입 여부 예측",
-    },
+    { title: "t검정", question: "두 집단의 평균이 다른가?", example: "남학생과 여학생의 자기통제력 평균 차이" },
+    { title: "상관분석", question: "두 연속형 변수가 함께 변하는가?", example: "비행친구 수와 비행빈도의 관계" },
+    { title: "회귀분석", question: "한 변수가 다른 변수를 예측하는가?", example: "부모감독이 비행빈도를 예측하는지 검증" },
+    { title: "로지스틱 회귀", question: "결과변수가 0/1일 때 무엇이 영향을 미치는가?", example: "후기비행 진입 여부 예측" },
   ],
   en: [
-    {
-      title: "t-test",
-      question: "Do two groups differ in means?",
-      example: "Mean difference in self-control by gender",
-    },
-    {
-      title: "Correlation",
-      question: "Do two continuous variables move together?",
-      example: "Delinquent peers and delinquency frequency",
-    },
-    {
-      title: "Regression",
-      question: "Does one variable predict another?",
-      example: "Parental supervision predicting delinquency",
-    },
-    {
-      title: "Logistic Regression",
-      question: "What predicts a binary outcome?",
-      example: "Predicting late-onset delinquency",
-    },
+    { title: "t-test", question: "Do two groups differ in means?", example: "Mean difference in self-control by gender" },
+    { title: "Correlation", question: "Do two continuous variables move together?", example: "Delinquent peers and delinquency frequency" },
+    { title: "Regression", question: "Does one variable predict another?", example: "Parental supervision predicting delinquency" },
+    { title: "Logistic Regression", question: "What predicts a binary outcome?", example: "Predicting late-onset delinquency" },
   ],
 };
 
 const METHOD_QUIZ = {
   ko: {
     question: "비행친구 수가 후기비행 진입 여부에 영향을 미치는가?",
-    variables: [
-      "독립변수: 비행친구 수",
-      "종속변수: 후기비행 진입 여부(0 = 없음, 1 = 있음)",
-    ],
+    variables: ["독립변수: 비행친구 수", "종속변수: 후기비행 진입 여부(0 = 없음, 1 = 있음)"],
     options: ["상관분석", "t검정", "로지스틱 회귀", "일원분산분석"],
     answer: "로지스틱 회귀",
-    explanation:
-      "종속변수가 0/1로 코딩된 이분형 변수이므로 로지스틱 회귀가 적합합니다.",
+    explanation: "종속변수가 0/1로 코딩된 이분형 변수이므로 로지스틱 회귀가 적합합니다.",
   },
   en: {
-    question:
-      "Does the number of delinquent peers affect entry into late-onset delinquency?",
-    variables: [
-      "IV: Number of delinquent peers",
-      "DV: Late-onset delinquency entry (0 = No, 1 = Yes)",
-    ],
+    question: "Does the number of delinquent peers affect entry into late-onset delinquency?",
+    variables: ["IV: Number of delinquent peers", "DV: Late-onset delinquency entry (0 = No, 1 = Yes)"],
     options: ["Correlation", "t-test", "Logistic Regression", "One-way ANOVA"],
     answer: "Logistic Regression",
-    explanation:
-      "Because the dependent variable is binary, logistic regression is appropriate.",
+    explanation: "Because the dependent variable is binary, logistic regression is appropriate.",
   },
 };
 
@@ -661,7 +487,6 @@ function App() {
   const [selectedBook, setSelectedBook] = useState(null);
   const [step, setStep] = useState("library"); // library, toc, chapter
   const [selectedChapter, setSelectedChapter] = useState(null);
-
   const [selectedClue, setSelectedClue] = useState(null);
   const [collected, setCollected] = useState({});
   const [wrongChoice, setWrongChoice] = useState(null);
@@ -671,7 +496,6 @@ function App() {
 
   const t = TEXT[lang];
   const currentCase = CASE[lang];
-
   const currentBook = BOOKS.find((book) => book.id === selectedBook);
 
   const collectedItems = Object.entries(collected).map(([clueKey, option]) => ({
@@ -715,10 +539,7 @@ function App() {
       setShowResult(false);
       return;
     }
-
-    if (step === "toc") {
-      goHome();
-    }
+    if (step === "toc") goHome();
   };
 
   const openBook = (bookId) => {
@@ -740,11 +561,7 @@ function App() {
       setWrongChoice(option.id);
       return;
     }
-
-    setCollected((prev) => ({
-      ...prev,
-      [clueKey]: option,
-    }));
+    setCollected((prev) => ({ ...prev, [clueKey]: option }));
     setWrongChoice(null);
   };
 
@@ -755,10 +572,7 @@ function App() {
           {step === "library" ? t.home : t.back}
         </button>
 
-        <button
-          className="lang-button"
-          onClick={() => setLang((prev) => (prev === "ko" ? "en" : "ko"))}
-        >
+        <button className="lang-button" onClick={() => setLang((prev) => (prev === "ko" ? "en" : "ko"))}>
           {t.language}
         </button>
       </header>
@@ -774,19 +588,13 @@ function App() {
           <section className="shelf-panel">
             <div className="section-heading">
               <h2>{lang === "ko" ? "학문 선택" : "Select a Discipline"}</h2>
-              <p>
-                {lang === "ko"
-                  ? "책을 고르면 해당 학문의 목차로 이동합니다."
-                  : "Choose a book to open its table of contents."}
-              </p>
+              <p>{lang === "ko" ? "책을 고르면 해당 학문의 목차로 이동합니다." : "Choose a book to open its table of contents."}</p>
             </div>
 
             <div className="book-grid">
               {BOOKS.map((book) => (
                 <button key={book.id} className="book-card" onClick={() => openBook(book.id)}>
-                  <span className="book-label">
-                    {lang === "ko" ? book.koTitle : book.enTitle}
-                  </span>
+                  <span className="book-label">{lang === "ko" ? book.koTitle : book.enTitle}</span>
                   <strong>{lang === "ko" ? book.koTitle : book.enTitle}</strong>
                   <p>{lang === "ko" ? book.koDesc : book.enDesc}</p>
                   <em>{t.open}</em>
@@ -800,9 +608,7 @@ function App() {
       {step !== "library" && currentBook && (
         <section className="study-page">
           <section className="study-title">
-            <div className="eyebrow">
-              {lang === "ko" ? currentBook.koTitle : currentBook.enTitle}
-            </div>
+            <div className="eyebrow">{lang === "ko" ? currentBook.koTitle : currentBook.enTitle}</div>
             <h1>{lang === "ko" ? currentBook.koTitle : currentBook.enTitle}</h1>
             <p>{lang === "ko" ? currentBook.koDesc : currentBook.enDesc}</p>
           </section>
@@ -849,63 +655,32 @@ function App() {
             />
           )}
 
-          {step === "chapter" && selectedBook === "criminology" && selectedChapter === "theory" && (
-            <TheoryNotes t={t} currentCase={currentCase} />
-          )}
-
-          {step === "chapter" && selectedBook === "statistics" && selectedChapter === "basic" && (
-            <StatisticsBook cards={STATS_CARDS[lang]} lang={lang} />
-          )}
-
+          {step === "chapter" && selectedBook === "criminology" && selectedChapter === "theory" && <TheoryNotes currentCase={currentCase} lang={lang} />}
+          {step === "chapter" && selectedBook === "statistics" && selectedChapter === "basic" && <StatisticsBook cards={STATS_CARDS[lang]} lang={lang} />}
           {step === "chapter" && selectedBook === "statistics" && selectedChapter === "advanced" && (
             <Placeholder
               title={lang === "ko" ? "고급 분석 노트" : "Advanced Analysis Notes"}
-              body={
-                lang === "ko"
-                  ? "로지스틱 회귀, LPA, 생존분석 등은 이후 문제 카드로 확장할 수 있습니다."
-                  : "Logistic regression, LPA, and survival analysis can later be expanded into practice cards."
-              }
+              body={lang === "ko" ? "로지스틱 회귀, LPA, 생존분석 등은 이후 문제 카드로 확장할 수 있습니다." : "Logistic regression, LPA, and survival analysis can later be expanded into practice cards."}
             />
           )}
-
           {step === "chapter" && selectedBook === "methods" && selectedChapter === "quiz" && (
-            <MethodsBook
-              quiz={METHOD_QUIZ[lang]}
-              methodChoice={methodChoice}
-              setMethodChoice={setMethodChoice}
-              lang={lang}
-            />
+            <MethodsBook quiz={METHOD_QUIZ[lang]} methodChoice={methodChoice} setMethodChoice={setMethodChoice} lang={lang} />
           )}
-
           {step === "chapter" && selectedBook === "methods" && selectedChapter === "design" && (
             <Placeholder
               title={lang === "ko" ? "연구설계 노트" : "Research Design Notes"}
-              body={
-                lang === "ko"
-                  ? "가설, 변수, 표본, 분석전략을 연결하는 학습 페이지로 확장할 수 있습니다."
-                  : "This can be expanded into a page connecting hypotheses, variables, samples, and analysis plans."
-              }
+              body={lang === "ko" ? "가설, 변수, 표본, 분석전략을 연결하는 학습 페이지로 확장할 수 있습니다." : "This can be expanded into a page connecting hypotheses, variables, samples, and analysis plans."}
             />
           )}
-
           {step === "chapter" && selectedBook === "psychology" && (
             <Placeholder
               title={t.psychology}
-              body={
-                lang === "ko"
-                  ? "심리학 교재 기반 콘텐츠를 나중에 이곳에 추가할 수 있습니다."
-                  : "Psychology textbook-based content can be added here later."
-              }
+              body={lang === "ko" ? "심리학 교재 기반 콘텐츠를 나중에 이곳에 추가할 수 있습니다." : "Psychology textbook-based content can be added here later."}
             />
           )}
 
           {selectedClue && (
-            <Modal
-              onClose={() => {
-                setSelectedClue(null);
-                setWrongChoice(null);
-              }}
-            >
+            <Modal onClose={() => { setSelectedClue(null); setWrongChoice(null); }}>
               <CluePaper
                 t={t}
                 clueKey={selectedClue}
@@ -913,10 +688,7 @@ function App() {
                 collectedOption={collected[selectedClue]}
                 wrongChoice={wrongChoice}
                 onSelect={selectEvidenceOption}
-                onClose={() => {
-                  setSelectedClue(null);
-                  setWrongChoice(null);
-                }}
+                onClose={() => { setSelectedClue(null); setWrongChoice(null); }}
               />
             </Modal>
           )}
@@ -939,18 +711,7 @@ function App() {
   );
 }
 
-function CriminologyCase({
-  t,
-  lang,
-  currentCase,
-  collected,
-  collectedItems,
-  selectedTheory,
-  setSelectedTheory,
-  setSelectedClue,
-  setShowResult,
-  resetCriminologyCase,
-}) {
+function CriminologyCase({ t, lang, currentCase, collected, collectedItems, selectedTheory, setSelectedTheory, setSelectedClue, setShowResult, resetCriminologyCase }) {
   return (
     <section className="case-layout">
       <article className="paper-panel case-main">
@@ -959,37 +720,21 @@ function CriminologyCase({
             <div className="eyebrow">{currentCase.id}</div>
             <h2>{currentCase.title}</h2>
           </div>
-          <button className="small-button" onClick={resetCriminologyCase}>
-            {t.reset}
-          </button>
+          <button className="small-button" onClick={resetCriminologyCase}>{t.reset}</button>
         </div>
 
         <div className="profile-grid">
-          <div>
-            <span>Name</span>
-            <strong>{currentCase.profile.name}</strong>
-          </div>
-          <div>
-            <span>Age</span>
-            <strong>{currentCase.profile.age}</strong>
-          </div>
-          <div>
-            <span>Offense</span>
-            <strong>{currentCase.profile.offense}</strong>
-          </div>
+          <div><span>Name</span><strong>{currentCase.profile.name}</strong></div>
+          <div><span>Age</span><strong>{currentCase.profile.age}</strong></div>
+          <div><span>Offense</span><strong>{currentCase.profile.offense}</strong></div>
         </div>
 
         <p className="case-summary">{currentCase.profile.summary}</p>
-
         <h3>{t.interviewTitle}</h3>
         <p className="interview-text">
           {currentCase.interview.map((part, index) =>
             part.key ? (
-              <button
-                key={`${part.key}-${index}`}
-                className={`inline-clue ${collected[part.key] ? "is-collected" : ""}`}
-                onClick={() => setSelectedClue(part.key)}
-              >
+              <button key={`${part.key}-${index}`} className={`inline-clue ${collected[part.key] ? "is-collected" : ""}`} onClick={() => setSelectedClue(part.key)}>
                 {part.text}
               </button>
             ) : (
@@ -1001,7 +746,6 @@ function CriminologyCase({
 
       <aside className="paper-panel evidence-side">
         <h2>{t.collectedEvidence}</h2>
-
         <div className="evidence-board">
           {collectedItems.length === 0 ? (
             <p className="empty-note">{t.noEvidence}</p>
@@ -1020,23 +764,14 @@ function CriminologyCase({
           <div className="theory-options">
             {Object.entries(currentCase.theories).map(([key, theory]) => (
               <label key={key} className="radio-row">
-                <input
-                  type="radio"
-                  name="theory"
-                  checked={selectedTheory === key}
-                  onChange={() => setSelectedTheory(key)}
-                />
+                <input type="radio" name="theory" checked={selectedTheory === key} onChange={() => setSelectedTheory(key)} />
                 <span>{theory.name}</span>
               </label>
             ))}
           </div>
         </div>
 
-        <button
-          className="primary-button"
-          disabled={collectedItems.length === 0 || !selectedTheory}
-          onClick={() => setShowResult(true)}
-        >
+        <button className="primary-button" disabled={collectedItems.length === 0 || !selectedTheory} onClick={() => setShowResult(true)}>
           {t.analyze}
         </button>
       </aside>
@@ -1050,38 +785,20 @@ function CluePaper({ t, clueKey, clue, collectedOption, wrongChoice, onSelect, o
       <div className="eyebrow">{clue.title}</div>
       <h2>{clue.title}</h2>
       <p className="paper-body">{clue.detail}</p>
-
       <div className="option-question">
         <h3>{t.chooseEvidence}</h3>
-
         <div className="evidence-option-grid">
           {clue.options.map((option) => {
             const isCollected = collectedOption?.id === option.id;
             const isWrong = wrongChoice === option.id;
-
             return (
-              <button
-                key={option.id}
-                className={`evidence-option ${isCollected ? "is-correct" : ""} ${
-                  isWrong ? "is-wrong" : ""
-                }`}
-                onClick={() => {
-                  if (!collectedOption) onSelect(clueKey, option);
-                }}
-                aria-disabled={Boolean(collectedOption)}
-              >
+              <button key={option.id} className={`evidence-option ${isCollected ? "is-correct" : ""} ${isWrong ? "is-wrong" : ""}`} onClick={() => { if (!collectedOption) onSelect(clueKey, option); }} aria-disabled={Boolean(collectedOption)}>
                 {option.label}
               </button>
             );
           })}
         </div>
-
-        {collectedOption && (
-          <button className="collected-close-button" onClick={onClose}>
-            {t.correct}
-          </button>
-        )}
-
+        {collectedOption && <button className="collected-close-button" onClick={onClose}>{t.correct}</button>}
         {wrongChoice && !collectedOption && <p className="feedback bad">{t.incorrect}</p>}
       </div>
     </article>
@@ -1090,25 +807,55 @@ function CluePaper({ t, clueKey, clue, collectedOption, wrongChoice, onSelect, o
 
 function ResultPanel({ t, lang, theories, selectedTheory, bestTheory, collectedItems }) {
   const userTheory = theories[selectedTheory];
+  const scoreMap = collectedItems.reduce((acc, item) => {
+    acc[item.theory] = (acc[item.theory] || 0) + 1;
+    return acc;
+  }, {});
+  const total = collectedItems.length || 1;
+  const theoryEntries = Object.entries(theories)
+    .map(([key, theory]) => ({ key, ...theory, count: scoreMap[key] || 0, percent: Math.round(((scoreMap[key] || 0) / total) * 100) }))
+    .filter((item) => item.count > 0);
   const isCorrect = bestTheory && selectedTheory === bestTheory.key;
 
   return (
     <article className="result-panel">
-      <div className="eyebrow">{t.resultTitle}</div>
       <h2>{t.resultTitle}</h2>
 
-      <section className={`judgement-card ${isCorrect ? "correct" : "partial"}`}>
-        <span>{isCorrect ? (lang === "ko" ? "적절한 선택" : "Appropriate Choice") : lang === "ko" ? "다시 비교해볼 선택" : "Needs Comparison"}</span>
-        <h3>{t.yourChoice}: {userTheory?.name}</h3>
-        <p>{userTheory?.explanation}</p>
-      </section>
-
       {bestTheory && (
-        <section className="result-block">
+        <section className="result-block primary-result">
           <h3>{t.bestTheory}: {bestTheory.name}</h3>
           <p>{bestTheory.explanation}</p>
+          <p className="result-reason">
+            {lang === "ko" ? "이 사례에서 수집된 근거들이 가장 많이 연결되는 이론입니다." : "This is the theory most strongly connected to the evidence collected in this case."}
+          </p>
         </section>
       )}
+
+      <section className="result-block chart-section">
+        <h3>{t.theoryWeight}</h3>
+        <div className="chart-layout">
+          <PieChart entries={theoryEntries} />
+          <div className="chart-legend">
+            {theoryEntries.map((entry, index) => (
+              <div key={entry.key}>
+                <span className={`legend-dot color-${index}`} />
+                <strong>{entry.name}</strong>
+                <em>{entry.percent}%</em>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className={`judgement-card ${isCorrect ? "correct" : "partial"}`}>
+        <span>{isCorrect ? t.appropriateChoice : t.compareChoice}</span>
+        <h3>{t.yourChoice}: {userTheory?.name}</h3>
+        {isCorrect ? (
+          <p>{lang === "ko" ? "당신이 선택한 이론은 수집된 근거와 가장 잘 일치합니다." : "Your selected theory matches the collected evidence best."}</p>
+        ) : (
+          <p>{lang === "ko" ? `${userTheory?.name}도 일부 단서를 설명할 수 있지만, 현재 수집된 근거의 비중상 ${bestTheory?.name}이 더 적합합니다.` : `${userTheory?.name} can explain some clues, but based on the collected evidence, ${bestTheory?.name} is more fitting.`}</p>
+        )}
+      </section>
 
       <section className="result-block">
         <h3>{t.evidenceMap}</h3>
@@ -1122,13 +869,11 @@ function ResultPanel({ t, lang, theories, selectedTheory, bestTheory, collectedI
         </div>
       </section>
 
-      <section className="result-block">
+      <section className="result-block reference-block">
         <h3>{t.sourceTitle}</h3>
-        <ul className="source-list">
+        <ul className="source-list left-source-list">
           {Object.entries(theories).map(([key, theory]) => (
-            <li key={key}>
-              <strong>{theory.scholar}</strong> — {theory.source}
-            </li>
+            <li key={key}><strong>{theory.scholar}</strong> — {theory.source}</li>
           ))}
         </ul>
       </section>
@@ -1136,119 +881,122 @@ function ResultPanel({ t, lang, theories, selectedTheory, bestTheory, collectedI
   );
 }
 
-function TheoryNotes({ currentCase }) {
+function PieChart({ entries }) {
+  if (entries.length === 0) return null;
+  let cumulative = 0;
+  const gradientParts = entries.map((entry, index) => {
+    const start = cumulative;
+    cumulative += entry.percent;
+    return `var(--chart-${index}) ${start}% ${cumulative}%`;
+  });
+  return (
+    <div className="pie-chart" style={{ background: `conic-gradient(${gradientParts.join(", ")})` }}>
+      <div><strong>100%</strong><span>Evidence</span></div>
+    </div>
+  );
+}
+
+function TheoryNotes({ currentCase, lang }) {
+  const [selectedTheoryNote, setSelectedTheoryNote] = useState(null);
+  const detailText = {
+    socialLearning: lang === "ko" ? "사회학습이론은 범죄와 비행이 타인과의 상호작용 속에서 학습된다고 봅니다. 특히 비행친구와의 접촉, 범죄기술의 학습, 비행을 정당화하는 태도, 또래의 강화가 핵심 단서가 됩니다." : "Social learning theory argues that crime and delinquency are learned through interaction with others, especially delinquent peers, learned techniques, definitions favorable to crime, and reinforcement.",
+    socialBond: lang === "ko" ? "사회유대이론은 개인이 사회와 맺는 유대가 약해질수록 비행 가능성이 높아진다고 봅니다. 애착, 전념, 참여, 신념이 약화되는 상황을 중요하게 봅니다." : "Social bond theory explains delinquency through weakened attachment, commitment, involvement, and belief.",
+    generalStrain: lang === "ko" ? "일반긴장이론은 좌절, 상실, 부정적 자극 등으로 발생한 긴장이 분노와 같은 부정적 감정을 만들고, 이것이 비행으로 이어질 수 있다고 설명합니다." : "General strain theory explains delinquency through strain, frustration, loss, and negative emotions such as anger.",
+    labeling: lang === "ko" ? "낙인이론은 개인이 문제아, 비행청소년, 범죄자 등으로 규정되는 과정이 자기인식과 사회적 관계를 변화시키고, 이후 일탈 행동을 강화할 수 있다고 봅니다." : "Labeling theory focuses on how being defined as deviant can shape identity, relationships, and later deviant behavior.",
+    selfControl: lang === "ko" ? "자기통제이론은 낮은 자기통제력, 충동성, 즉각적 만족 추구, 위험 선호가 범죄와 비행의 핵심 원인이라고 설명합니다." : "Self-control theory explains crime through low self-control, impulsivity, risk-seeking, and preference for immediate gratification.",
+  };
+
   return (
     <section className="paper-panel">
-      <div className="panel-header">
-        <div>
-          <div className="eyebrow">Theory Notes</div>
-          <h2>범죄학 이론 노트</h2>
-        </div>
-      </div>
-
+      <div className="panel-header"><div><div className="eyebrow">Theory Notes</div><h2>{lang === "ko" ? "범죄학 이론 노트" : "Criminology Theory Notes"}</h2></div></div>
       <div className="card-grid">
         {Object.entries(currentCase.theories).map(([key, theory]) => (
-          <article className="info-card" key={key}>
-            <h3>{theory.name}</h3>
-            <span>{theory.scholar}</span>
-            <p>{theory.explanation}</p>
-          </article>
+          <button type="button" className="info-card clickable-card" key={key} onClick={() => setSelectedTheoryNote({ key, ...theory })}>
+            <h3>{theory.name}</h3><span>{theory.scholar}</span><p>{theory.explanation}</p>
+          </button>
         ))}
       </div>
+      {selectedTheoryNote && (
+        <Modal onClose={() => setSelectedTheoryNote(null)}>
+          <article className="theory-detail">
+            <div className="eyebrow">Theory Detail</div><h2>{selectedTheoryNote.name}</h2><p>{detailText[selectedTheoryNote.key]}</p>
+            <h3>{lang === "ko" ? "참고문헌" : "References"}</h3>
+            <ul className="source-list left-source-list"><li><strong>{selectedTheoryNote.scholar}</strong> — {selectedTheoryNote.source}</li></ul>
+          </article>
+        </Modal>
+      )}
     </section>
   );
 }
 
 function StatisticsBook({ cards, lang }) {
+  const [selectedStat, setSelectedStat] = useState(null);
+  const statDetails = {
+    "t검정": { title: "t검정", desc: "t검정은 두 집단의 평균 차이가 통계적으로 유의한지 확인할 때 사용합니다. 예를 들어 남학생과 여학생의 자기통제력 평균이 다른지 검증할 수 있습니다.", paper: "예: 청소년 성별에 따른 자기통제력 또는 비행성향 평균 차이 비교 연구", graph: "bar" },
+    "상관분석": { title: "상관분석", desc: "상관분석은 두 연속형 변수가 함께 증가하거나 감소하는 경향이 있는지 확인할 때 사용합니다. 단, 상관은 인과관계를 의미하지 않습니다.", paper: "예: 비행친구 수와 비행빈도의 관련성 연구", graph: "scatter" },
+    "회귀분석": { title: "회귀분석", desc: "회귀분석은 하나 이상의 독립변수가 종속변수를 얼마나 예측하는지 검토할 때 사용합니다. 통제변수를 포함해 순수한 영향력을 살펴볼 수 있습니다.", paper: "예: 부모감독이 청소년 비행빈도에 미치는 영향 연구", graph: "line" },
+    "로지스틱 회귀": { title: "로지스틱 회귀", desc: "로지스틱 회귀는 종속변수가 0/1처럼 이분형일 때 사용합니다. 결과는 odds 또는 odds ratio를 중심으로 해석합니다.", paper: "예: 후기비행 진입 여부를 예측하는 위험요인 연구", graph: "logit" },
+    "t-test": { title: "t-test", desc: "A t-test examines whether two groups differ significantly in their means.", paper: "Example: Gender differences in self-control among adolescents.", graph: "bar" },
+    "Correlation": { title: "Correlation", desc: "Correlation examines whether two continuous variables move together. It does not imply causation.", paper: "Example: Relationship between delinquent peers and delinquency frequency.", graph: "scatter" },
+    "Regression": { title: "Regression", desc: "Regression examines how one or more independent variables predict a dependent variable.", paper: "Example: Parental supervision predicting delinquency frequency.", graph: "line" },
+    "Logistic Regression": { title: "Logistic Regression", desc: "Logistic regression is used when the dependent variable is binary.", paper: "Example: Predicting entry into late-onset delinquency.", graph: "logit" },
+  };
+
   return (
     <section className="paper-panel">
-      <div className="panel-header">
-        <div>
-          <div className="eyebrow">Statistics</div>
-          <h2>{lang === "ko" ? "기초 통계방법론" : "Basic Statistical Methods"}</h2>
-        </div>
-      </div>
-
+      <div className="panel-header"><div><div className="eyebrow">Statistics</div><h2>{lang === "ko" ? "기초 통계방법론" : "Basic Statistical Methods"}</h2></div></div>
       <div className="card-grid">
         {cards.map((card) => (
-          <article className="info-card" key={card.title}>
-            <h3>{card.title}</h3>
-            <strong>{card.question}</strong>
-            <p>{card.example}</p>
-          </article>
+          <button type="button" className="info-card clickable-card" key={card.title} onClick={() => setSelectedStat(statDetails[card.title])}>
+            <h3>{card.title}</h3><strong>{card.question}</strong><p>ex) {card.example}</p>
+          </button>
         ))}
       </div>
+      {selectedStat && (
+        <Modal onClose={() => setSelectedStat(null)}>
+          <article className="stat-detail"><div className="eyebrow">Method Detail</div><h2>{selectedStat.title}</h2><p>{selectedStat.desc}</p><StatGraph type={selectedStat.graph} /><h3>{lang === "ko" ? "활용 논문 예시" : "Example Research Use"}</h3><p>{selectedStat.paper}</p></article>
+        </Modal>
+      )}
     </section>
   );
 }
 
+function StatGraph({ type }) {
+  return (
+    <div className="stat-graph">
+      {type === "bar" && <svg viewBox="0 0 320 180"><line x1="40" y1="145" x2="280" y2="145" /><line x1="40" y1="145" x2="40" y2="25" /><rect x="90" y="75" width="48" height="70" rx="6" /><rect x="185" y="48" width="48" height="97" rx="6" /><text x="114" y="165" textAnchor="middle">A</text><text x="209" y="165" textAnchor="middle">B</text></svg>}
+      {type === "scatter" && <svg viewBox="0 0 320 180"><line x1="40" y1="145" x2="280" y2="145" /><line x1="40" y1="145" x2="40" y2="25" />{[70, 95, 120, 150, 175, 205, 230, 255].map((x, i) => <circle key={x} cx={x} cy={130 - i * 11} r="5" />)}<line x1="65" y1="128" x2="260" y2="42" className="trend-line" /></svg>}
+      {type === "line" && <svg viewBox="0 0 320 180"><line x1="40" y1="145" x2="280" y2="145" /><line x1="40" y1="145" x2="40" y2="25" /><polyline points="55,130 95,112 135,100 175,78 215,65 260,42" /></svg>}
+      {type === "logit" && <svg viewBox="0 0 320 180"><line x1="40" y1="145" x2="280" y2="145" /><line x1="40" y1="145" x2="40" y2="25" /><path d="M55 135 C110 135, 125 118, 155 90 C185 62, 210 42, 265 40" /></svg>}
+    </div>
+  );
+}
+
 function MethodsBook({ quiz, methodChoice, setMethodChoice, lang }) {
+  const isCorrect = methodChoice === quiz.answer;
   return (
     <section className="paper-panel">
-      <div className="panel-header">
-        <div>
-          <div className="eyebrow">Research Methods</div>
-          <h2>{lang === "ko" ? "분석방법 선택 훈련" : "Choosing an Analysis Method"}</h2>
-        </div>
-      </div>
-
+      <div className="panel-header"><div><div className="eyebrow">Research Methods</div><h2>{lang === "ko" ? "분석방법 선택 훈련" : "Choosing an Analysis Method"}</h2></div></div>
       <div className="method-question">
         <h3>{quiz.question}</h3>
-
-        <div className="variable-list">
-          {quiz.variables.map((variable) => (
-            <div key={variable}>{variable}</div>
-          ))}
-        </div>
-
-        <div className="option-grid">
-          {quiz.options.map((option) => (
-            <button
-              key={option}
-              className={`option-button ${methodChoice === option ? "is-selected" : ""}`}
-              onClick={() => setMethodChoice(option)}
-            >
-              {option}
-            </button>
-          ))}
-        </div>
-
-        {methodChoice && (
-          <div className={`feedback-box ${methodChoice === quiz.answer ? "correct" : "incorrect"}`}>
-            <h3>
-              {methodChoice === quiz.answer
-                ? lang === "ko"
-                  ? "적절한 선택입니다."
-                  : "Good choice."
-                : lang === "ko"
-                  ? "다시 생각해볼 필요가 있습니다."
-                  : "Think again."}
-            </h3>
-            <p>{quiz.explanation}</p>
-          </div>
-        )}
+        <div className="variable-list">{quiz.variables.map((variable) => <div key={variable}>{variable}</div>)}</div>
+        <div className="option-grid">{quiz.options.map((option) => <button key={option} className={`option-button ${methodChoice === option ? "is-selected" : ""}`} onClick={() => setMethodChoice(option)}>{option}</button>)}</div>
+        {methodChoice && !isCorrect && <div className="feedback-box incorrect"><h3>{lang === "ko" ? "다시 생각해보세요." : "Think again."}</h3><p>{lang === "ko" ? "종속변수의 형태와 연구질문을 다시 확인해보세요." : "Check the dependent variable type and the research question again."}</p></div>}
+        {methodChoice && isCorrect && <div className="feedback-box correct"><h3>{lang === "ko" ? "적절한 선택입니다." : "Good choice."}</h3><p>{quiz.explanation}</p></div>}
       </div>
     </section>
   );
 }
 
 function Placeholder({ title, body }) {
-  return (
-    <section className="paper-panel">
-      <div className="eyebrow">Archive</div>
-      <h2>{title}</h2>
-      <p className="placeholder-text">{body}</p>
-    </section>
-  );
+  return <section className="paper-panel"><div className="eyebrow">Archive</div><h2>{title}</h2><p className="placeholder-text">{body}</p></section>;
 }
 
 function Modal({ children, onClose }) {
   return (
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal-paper" onClick={(event) => event.stopPropagation()}>
-        <button className="modal-close" onClick={onClose}>
-          ×
-        </button>
+        <button className="modal-close" onClick={onClose}>×</button>
         {children}
       </div>
     </div>
