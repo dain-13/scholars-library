@@ -144,15 +144,15 @@ const TOC = {
       },
       {
         id: "theory",
-        title: "범죄학 이론 노트",
-        desc: "사회유대이론, 사회학습이론, 일반긴장이론, 낙인이론의 핵심을 비교합니다.",
+        title: "범죄원인론 노트",
+        desc: "사회유대이론, 사회학습이론, 일반긴장이론, 낙인이론 등 범죄원인론의 이론을 공부합니다.",
       },
     ],
     statistics: [
       {
         id: "basic",
         title: "기초 통계방법론",
-        desc: "t검정, 상관분석, 회귀분석, 카이제곱 검정의 사용 맥락을 정리합니다.",
+        desc: "t검정, 상관분석, 회귀분석, 카이제곱 검정 등의 기초 통계방법론의 개념을 정리합니다.",
       },
       {
         id: "advanced",
@@ -1286,7 +1286,7 @@ function CrimeTextLab({ lang }) {
           <h2>{lang === "ko" ? "면담기록 키워드 분석" : "Interview Keyword Analysis"}</h2>
           <p className="text-lab-intro">
             {lang === "ko"
-              ? "1단계 버전은 AI API 없이 키워드 사전으로 위험·보호요인을 탐지합니다. 연구용 확정 코딩이 아니라 예비 스크리닝 도구로 보면 됩니다."
+              ? "예비 스크리닝 도구로써, 키워드 사전으로 위험·보호요인을 탐지합니다."
               : "This first-stage version uses a keyword dictionary without an AI API. Treat it as preliminary screening, not final research coding."}
           </p>
         </div>
