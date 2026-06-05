@@ -138,6 +138,11 @@ const TOC = {
         desc: "면담기록 속 단서를 읽고 근거를 수집한 뒤, 가장 적합한 범죄학 이론을 판단합니다.",
       },
       {
+        id: "textlab",
+        title: "Text Lab 01. 면담기록 키워드 분석",
+        desc: "면담 사례를 붙여넣거나 txt 파일로 올려 위험·보호요인 키워드를 1차 탐지합니다.",
+      },
+      {
         id: "theory",
         title: "범죄학 이론 노트",
         desc: "사회유대이론, 사회학습이론, 일반긴장이론, 낙인이론의 핵심을 비교합니다.",
@@ -181,6 +186,11 @@ const TOC = {
         id: "case001",
         title: "Case 001. Juvenile Theft Case",
         desc: "Read interview clues, collect evidence, and judge the most fitting criminological theory.",
+      },
+      {
+        id: "textlab",
+        title: "Text Lab 01. Interview Keyword Analysis",
+        desc: "Paste an interview case or upload a txt file to detect first-stage risk/protective factor keywords.",
       },
       {
         id: "theory",
@@ -684,6 +694,10 @@ function App() {
             />
           )}
 
+          {step === "chapter" && selectedBook === "criminology" && selectedChapter === "textlab" && (
+            <CrimeTextLab lang={lang} />
+          )}
+
           {step === "chapter" && selectedBook === "criminology" && selectedChapter === "theory" && <TheoryNotes currentCase={currentCase} lang={lang} />}
           {step === "chapter" && selectedBook === "statistics" && selectedChapter === "basic" && <StatisticsBook cards={STATS_CARDS[lang]} lang={lang} />}
           {step === "chapter" && selectedBook === "statistics" && selectedChapter === "advanced" && (
@@ -1093,6 +1107,273 @@ function StatGraph({ type }) {
     </div>
   );
 }
+
+
+const TEXT_LAB_SAMPLE = {
+  ko: `대상자는 지방 소도시에서 2남 중 막내로 출생하였다. 초등학교 고학년 무렵 부모가 이혼하였고, 이후 조모와 함께 생활하였다. 부는 경제적 문제로 집을 비우는 시간이 많았으며, 대상자의 귀가 시간이나 친구 관계를 지속적으로 확인하기 어려웠다. 중학교 1학년 이후 결석과 지각이 증가하였고, 담임교사는 학교생활에 대한 흥미와 소속감이 낮아진 것으로 기록하였다. 중학교 2학년 무렵부터 동네 선배 및 비행 경험이 있는 친구들과 어울리기 시작했고, 이들과 함께 시간을 보내며 편의점 절도 방법을 알게 되었다고 진술하였다. 면담 중 대상자는 자신이 집과 학교 어디에서도 인정받지 못한다고 느꼈으며, 교사와 또래가 자신을 문제학생으로 본다고 말했다. 다만 최근 상담교사와의 면담에는 비교적 성실히 참여하고 있으며, 자동차 정비 관련 직업훈련에는 관심을 보였다.`,
+  en: `The youth was born as the younger of two brothers in a small provincial city. During late elementary school, the parents divorced, and the youth later lived with the grandmother. The father was often away from home due to economic problems and had difficulty monitoring curfew and peer relationships. After entering middle school, absenteeism and tardiness increased, and the homeroom teacher noted low interest and weak belonging at school. In the second year of middle school, the youth began spending time with older neighborhood peers and friends with delinquency experience, and stated that he learned how to steal from convenience stores through them. During the interview, the youth said he felt unrecognized at home and school and believed teachers and peers viewed him as a problem student. However, he has recently participated in counseling relatively consistently and showed interest in vocational training related to auto repair.`,
+};
+
+const TEXT_LAB_CATEGORIES = {
+  ko: [
+    {
+      id: "family",
+      label: "가족·감독 요인",
+      theory: "사회유대이론",
+      type: "risk",
+      keywords: ["부모", "이혼", "별거", "재혼", "조모", "조부", "가정", "가족", "감독", "방임", "귀가", "경제적 문제", "갈등"],
+      description: "가족구조 변화, 부모감독 약화, 보호자의 부재처럼 사회적 유대 약화와 연결될 수 있는 단서입니다.",
+    },
+    {
+      id: "school",
+      label: "학교 부적응",
+      theory: "사회유대이론",
+      type: "risk",
+      keywords: ["학교", "결석", "지각", "중퇴", "자퇴", "소속감", "흥미", "담임", "교사", "학업", "부적응"],
+      description: "학교 몰입과 소속감 저하를 보여주는 단서로 사회유대이론과 연결됩니다.",
+    },
+    {
+      id: "peer",
+      label: "비행 또래",
+      theory: "사회학습이론",
+      type: "risk",
+      keywords: ["친구", "또래", "선배", "비행", "절도", "무단결석", "어울리", "함께", "방법을 알게", "범죄기술"],
+      description: "비행친구와의 접촉, 모방, 범죄기술 학습과 관련된 단서입니다.",
+    },
+    {
+      id: "strain",
+      label: "긴장·부정정서",
+      theory: "일반긴장이론",
+      type: "risk",
+      keywords: ["분노", "억울", "좌절", "스트레스", "인정받지 못", "불안", "우울", "상실", "폭력", "갈등"],
+      description: "부정적 감정과 긴장이 비행으로 이어질 가능성을 보여주는 단서입니다.",
+    },
+    {
+      id: "labeling",
+      label: "낙인 경험",
+      theory: "낙인이론",
+      type: "risk",
+      keywords: ["문제학생", "문제아", "낙인", "나쁜 학생", "비행청소년", "찍혔다", "평가", "이미"],
+      description: "타인이 자신을 일탈적 존재로 규정한다고 느끼는 단서입니다.",
+    },
+    {
+      id: "protective",
+      label: "보호요인",
+      theory: "보호요인 관점",
+      type: "protective",
+      keywords: ["상담", "성실", "참여", "관심", "직업훈련", "취업", "진로", "지지", "보호자", "목표"],
+      description: "재비행 가능성을 낮추거나 개입 가능성을 높일 수 있는 긍정적 단서입니다.",
+    },
+  ],
+  en: [
+    {
+      id: "family",
+      label: "Family & supervision",
+      theory: "Social Bond Theory",
+      type: "risk",
+      keywords: ["parent", "divorce", "separation", "grandmother", "family", "supervision", "monitoring", "curfew", "economic", "conflict"],
+      description: "Clues related to family disruption, weak monitoring, and weakened social bonds.",
+    },
+    {
+      id: "school",
+      label: "School maladjustment",
+      theory: "Social Bond Theory",
+      type: "risk",
+      keywords: ["school", "absenteeism", "tardiness", "dropout", "belonging", "teacher", "academic", "interest"],
+      description: "Clues related to weak school commitment and belonging.",
+    },
+    {
+      id: "peer",
+      label: "Delinquent peers",
+      theory: "Social Learning Theory",
+      type: "risk",
+      keywords: ["friend", "peer", "older", "delinquency", "theft", "truancy", "spending time", "learned", "steal"],
+      description: "Clues related to delinquent peer contact, imitation, and learning.",
+    },
+    {
+      id: "strain",
+      label: "Strain & negative emotion",
+      theory: "General Strain Theory",
+      type: "risk",
+      keywords: ["anger", "frustration", "stress", "unrecognized", "anxiety", "depression", "loss", "conflict"],
+      description: "Clues related to strain and negative emotions.",
+    },
+    {
+      id: "labeling",
+      label: "Labeling experience",
+      theory: "Labeling Theory",
+      type: "risk",
+      keywords: ["problem student", "label", "bad", "viewed", "deviant", "evaluated"],
+      description: "Clues related to being defined as deviant by others.",
+    },
+    {
+      id: "protective",
+      label: "Protective factors",
+      theory: "Protective factor perspective",
+      type: "protective",
+      keywords: ["counseling", "participated", "interest", "vocational", "training", "employment", "support", "goal"],
+      description: "Positive clues that may support intervention or lower risk.",
+    },
+  ],
+};
+
+function analyzeInterviewText(text, lang) {
+  const lowered = text.toLowerCase();
+  return TEXT_LAB_CATEGORIES[lang].map((category) => {
+    const matchedKeywords = category.keywords.filter((keyword) =>
+      lowered.includes(keyword.toLowerCase())
+    );
+
+    const snippets = matchedKeywords.slice(0, 4).map((keyword) => {
+      const index = lowered.indexOf(keyword.toLowerCase());
+      const start = Math.max(0, index - 26);
+      const end = Math.min(text.length, index + keyword.length + 38);
+      return text.slice(start, end).trim();
+    });
+
+    return {
+      ...category,
+      count: matchedKeywords.length,
+      matchedKeywords,
+      snippets,
+    };
+  });
+}
+
+function CrimeTextLab({ lang }) {
+  const [text, setText] = useState(TEXT_LAB_SAMPLE[lang]);
+  const [results, setResults] = useState(() => analyzeInterviewText(TEXT_LAB_SAMPLE[lang], lang));
+
+  const riskTotal = results
+    .filter((item) => item.type === "risk")
+    .reduce((sum, item) => sum + item.count, 0);
+
+  const protectiveTotal = results
+    .filter((item) => item.type === "protective")
+    .reduce((sum, item) => sum + item.count, 0);
+
+  const handleAnalyze = () => {
+    setResults(analyzeInterviewText(text, lang));
+  };
+
+  const handleReset = () => {
+    setText("");
+    setResults(analyzeInterviewText("", lang));
+  };
+
+  const handleSample = () => {
+    setText(TEXT_LAB_SAMPLE[lang]);
+    setResults(analyzeInterviewText(TEXT_LAB_SAMPLE[lang], lang));
+  };
+
+  const handleFile = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const fileText = String(reader.result || "");
+      setText(fileText);
+      setResults(analyzeInterviewText(fileText, lang));
+    };
+    reader.readAsText(file, "UTF-8");
+  };
+
+  return (
+    <section className="paper-panel text-lab-panel">
+      <div className="panel-header">
+        <div>
+          <h2>{lang === "ko" ? "면담기록 키워드 분석" : "Interview Keyword Analysis"}</h2>
+          <p className="text-lab-intro">
+            {lang === "ko"
+              ? "1단계 버전은 AI API 없이 키워드 사전으로 위험·보호요인을 탐지합니다. 연구용 확정 코딩이 아니라 예비 스크리닝 도구로 보면 됩니다."
+              : "This first-stage version uses a keyword dictionary without an AI API. Treat it as preliminary screening, not final research coding."}
+          </p>
+        </div>
+        <button className="small-button" onClick={handleReset}>
+          {lang === "ko" ? "초기화" : "Reset"}
+        </button>
+      </div>
+
+      <div className="text-lab-layout">
+        <div className="text-input-card">
+          <div className="text-lab-actions">
+            <button className="small-button" onClick={handleSample}>
+              {lang === "ko" ? "샘플 불러오기" : "Load sample"}
+            </button>
+            <label className="file-upload-button">
+              {lang === "ko" ? "txt 파일 업로드" : "Upload txt"}
+              <input type="file" accept=".txt,text/plain" onChange={handleFile} />
+            </label>
+          </div>
+
+          <textarea
+            value={text}
+            onChange={(event) => setText(event.target.value)}
+            placeholder={
+              lang === "ko"
+                ? "여기에 면담기록 또는 성장과정 텍스트를 붙여넣으세요."
+                : "Paste an interview record or life-history text here."
+            }
+          />
+
+          <button className="primary-button" onClick={handleAnalyze}>
+            {lang === "ko" ? "키워드 분석하기" : "Analyze keywords"}
+          </button>
+        </div>
+
+        <div className="text-result-card">
+          <div className="text-summary-grid">
+            <div>
+              <span>{lang === "ko" ? "위험요인 단서" : "Risk clues"}</span>
+              <strong>{riskTotal}</strong>
+            </div>
+            <div>
+              <span>{lang === "ko" ? "보호요인 단서" : "Protective clues"}</span>
+              <strong>{protectiveTotal}</strong>
+            </div>
+          </div>
+
+          <div className="factor-list">
+            {results.map((item) => (
+              <article
+                key={item.id}
+                className={`factor-card ${item.type === "protective" ? "protective" : "risk"}`}
+              >
+                <div className="factor-card-header">
+                  <h3>{item.label}</h3>
+                  <strong>{item.count}</strong>
+                </div>
+                <p>{item.description}</p>
+                <span className="theory-tag">{item.theory}</span>
+
+                {item.matchedKeywords.length > 0 ? (
+                  <>
+                    <div className="keyword-row">
+                      {item.matchedKeywords.slice(0, 8).map((keyword) => (
+                        <span key={keyword}>{keyword}</span>
+                      ))}
+                    </div>
+                    <div className="snippet-list">
+                      {item.snippets.map((snippet, index) => (
+                        <blockquote key={`${item.id}-${index}`}>…{snippet}…</blockquote>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <p className="no-match">
+                    {lang === "ko" ? "탐지된 키워드 없음" : "No keywords detected"}
+                  </p>
+                )}
+              </article>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
 
 function MethodsBook({ quiz, methodChoice, setMethodChoice, lang, t, onReset }) {
   const isCorrect = methodChoice === quiz.answer;

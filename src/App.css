@@ -580,3 +580,202 @@ button { font-family: inherit; }
     justify-items: start;
   }
 }
+
+
+/* ===== Crime Text Lab ===== */
+.text-lab-intro {
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.65;
+  font-size: 0.95rem;
+}
+
+.text-lab-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.25fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.text-input-card,
+.text-result-card {
+  border: 1px solid var(--dark-line);
+  border-radius: 22px;
+  background: rgba(255, 255, 255, 0.42);
+  padding: 18px;
+}
+
+.text-lab-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.file-upload-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(15, 61, 49, 0.18);
+  background: rgba(15, 61, 49, 0.08);
+  color: var(--green);
+  border-radius: 14px;
+  padding: 10px 14px;
+  cursor: pointer;
+  font-weight: 900;
+  font-size: 0.9rem;
+}
+
+.file-upload-button input {
+  display: none;
+}
+
+.text-input-card textarea {
+  width: 100%;
+  min-height: 390px;
+  resize: vertical;
+  border: 1px solid var(--dark-line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.68);
+  color: var(--ink);
+  padding: 16px;
+  font: inherit;
+  line-height: 1.75;
+  margin-bottom: 12px;
+}
+
+.text-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.text-summary-grid div {
+  border-radius: 18px;
+  background: rgba(15, 61, 49, 0.08);
+  border: 1px solid rgba(15, 61, 49, 0.14);
+  padding: 14px;
+}
+
+.text-summary-grid span {
+  display: block;
+  color: var(--muted);
+  font-size: 0.84rem;
+  font-weight: 800;
+  margin-bottom: 5px;
+}
+
+.text-summary-grid strong {
+  display: block;
+  color: var(--green);
+  font-size: 1.65rem;
+  font-weight: 900;
+}
+
+.factor-list {
+  display: grid;
+  gap: 12px;
+}
+
+.factor-card {
+  border: 1px solid var(--dark-line);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.52);
+  padding: 16px;
+}
+
+.factor-card.protective {
+  background: rgba(37, 112, 75, 0.08);
+  border-color: rgba(37, 112, 75, 0.18);
+}
+
+.factor-card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.factor-card h3 {
+  margin: 0;
+  font-size: 1.02rem;
+}
+
+.factor-card-header strong {
+  display: inline-flex;
+  min-width: 34px;
+  height: 34px;
+  border-radius: 99px;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background: var(--green);
+  font-size: 0.95rem;
+}
+
+.factor-card p {
+  margin: 8px 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 0.92rem;
+}
+
+.theory-tag {
+  display: inline-flex;
+  margin-top: 10px;
+  border-radius: 999px;
+  background: rgba(183, 150, 92, 0.16);
+  color: #70522b;
+  padding: 6px 10px;
+  font-size: 0.82rem;
+  font-weight: 900;
+}
+
+.keyword-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.keyword-row span {
+  border-radius: 999px;
+  background: rgba(15, 61, 49, 0.08);
+  color: var(--green);
+  padding: 5px 9px;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.snippet-list {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.snippet-list blockquote {
+  margin: 0;
+  border-left: 3px solid rgba(15, 61, 49, 0.3);
+  padding: 8px 10px;
+  color: #34302a;
+  background: rgba(255, 255, 255, 0.42);
+  border-radius: 8px;
+  line-height: 1.55;
+  font-size: 0.88rem;
+}
+
+.no-match {
+  color: var(--muted);
+  font-size: 0.88rem;
+}
+
+@media (max-width: 900px) {
+  .text-lab-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .text-input-card textarea {
+    min-height: 260px;
+  }
+}
