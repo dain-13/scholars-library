@@ -40,6 +40,14 @@ const TEXT = {
     appropriateChoice: "적절한 선택",
     compareChoice: "다시 비교해볼 선택",
     missedClues: "아직 확인하지 않은 단서",
+    correctAnswerSection: "정답 이론 설명",
+    selectedAnswerSection: "선택한 답안 분석",
+    allEvidenceNeeded: "모든 근거를 수집한 뒤 이론을 선택할 수 있습니다.",
+    clueProgress: "근거 수집 진행",
+    readyToChoose: "이제 이론을 선택할 수 있습니다.",
+    theoryResultReason: "이 사례에서 가장 많은 핵심 단서를 설명하는 이론입니다.",
+    partialSupport: "이 이론도 일부 단서를 설명할 수 있지만, 사례 전체를 가장 잘 설명하는 이론은 아닙니다.",
+    unsupported: "이 이론은 이 사례의 핵심 단서를 충분히 설명하지 못합니다.",
   },
   en: {
     appTitle: "The Scholar's Library",
@@ -79,6 +87,14 @@ const TEXT = {
     appropriateChoice: "Appropriate Choice",
     compareChoice: "Needs Comparison",
     missedClues: "Unchecked Clues",
+    correctAnswerSection: "Best-Fitting Theory",
+    selectedAnswerSection: "Review of Your Selected Answer",
+    allEvidenceNeeded: "You can choose a theory after collecting all clues.",
+    clueProgress: "Evidence Progress",
+    readyToChoose: "You can now choose a theory.",
+    theoryResultReason: "This theory explains the largest share of the key clues in this case.",
+    partialSupport: "This theory explains some clues, but it is not the best overall explanation for the whole case.",
+    unsupported: "This theory does not sufficiently explain the core clues in this case.",
   },
 };
 
@@ -210,6 +226,14 @@ const CASE = {
   ko: {
     id: "CASE 001",
     title: "청소년 절도 사례",
+    bestTheoryKey: "socialBond",
+    expectedTheoryWeights: {
+      socialBond: 50,
+      socialLearning: 25,
+      labeling: 25,
+      generalStrain: 0,
+      selfControl: 0,
+    },
     profile: {
       name: "김○○",
       age: "17세",
@@ -355,6 +379,14 @@ const CASE = {
   en: {
     id: "CASE 001",
     title: "Juvenile Theft Case",
+    bestTheoryKey: "socialBond",
+    expectedTheoryWeights: {
+      socialBond: 50,
+      socialLearning: 25,
+      labeling: 25,
+      generalStrain: 0,
+      selfControl: 0,
+    },
     profile: {
       name: "Kim ○○",
       age: "17",
@@ -482,6 +514,14 @@ const METHOD_QUIZ = {
   },
 };
 
+
+function getCorrectEvidenceItems(caseData) {
+  return Object.entries(caseData.clues).map(([clueKey, clue]) => {
+    const option = clue.options.find((item) => item.correct);
+    return { clueKey, ...option, clueTitle: clue.title };
+  });
+}
+
 function App() {
   const [lang, setLang] = useState("ko");
   const [selectedBook, setSelectedBook] = useState(null);
@@ -503,25 +543,8 @@ function App() {
     ...option,
   }));
 
-  const theoryScores = useMemo(() => {
-    const scores = {};
-    collectedItems.forEach((item) => {
-      scores[item.theory] = (scores[item.theory] || 0) + 1;
-    });
-    return scores;
-  }, [collectedItems]);
-
-  const rankedTheories = useMemo(() => {
-    return Object.entries(currentCase.theories)
-      .map(([key, theory]) => ({
-        key,
-        ...theory,
-        score: theoryScores[key] || 0,
-      }))
-      .sort((a, b) => b.score - a.score);
-  }, [currentCase.theories, theoryScores]);
-
-  const bestTheory = rankedTheories.find((theory) => theory.score > 0);
+  const totalClues = Object.keys(currentCase.clues).length;
+  const allCluesCollected = collectedItems.length === totalClues;
 
   const goHome = () => {
     setSelectedBook(null);
@@ -554,6 +577,10 @@ function App() {
     setWrongChoice(null);
     setSelectedTheory("");
     setShowResult(false);
+  };
+
+  const resetMethodQuiz = () => {
+    setMethodChoice(null);
   };
 
   const selectEvidenceOption = (clueKey, option) => {
@@ -652,6 +679,8 @@ function App() {
               setSelectedClue={setSelectedClue}
               setShowResult={setShowResult}
               resetCriminologyCase={resetCriminologyCase}
+              totalClues={totalClues}
+              allCluesCollected={allCluesCollected}
             />
           )}
 
@@ -664,7 +693,7 @@ function App() {
             />
           )}
           {step === "chapter" && selectedBook === "methods" && selectedChapter === "quiz" && (
-            <MethodsBook quiz={METHOD_QUIZ[lang]} methodChoice={methodChoice} setMethodChoice={setMethodChoice} lang={lang} />
+            <MethodsBook quiz={METHOD_QUIZ[lang]} methodChoice={methodChoice} setMethodChoice={setMethodChoice} lang={lang} t={t} onReset={resetMethodQuiz} />
           )}
           {step === "chapter" && selectedBook === "methods" && selectedChapter === "design" && (
             <Placeholder
@@ -698,10 +727,8 @@ function App() {
               <ResultPanel
                 t={t}
                 lang={lang}
-                theories={currentCase.theories}
+                caseData={currentCase}
                 selectedTheory={selectedTheory}
-                bestTheory={bestTheory}
-                collectedItems={collectedItems}
               />
             </Modal>
           )}
@@ -711,30 +738,59 @@ function App() {
   );
 }
 
-function CriminologyCase({ t, lang, currentCase, collected, collectedItems, selectedTheory, setSelectedTheory, setSelectedClue, setShowResult, resetCriminologyCase }) {
+function CriminologyCase({
+  t,
+  lang,
+  currentCase,
+  collected,
+  collectedItems,
+  selectedTheory,
+  setSelectedTheory,
+  setSelectedClue,
+  setShowResult,
+  resetCriminologyCase,
+  totalClues,
+  allCluesCollected,
+}) {
   return (
     <section className="case-layout">
       <article className="paper-panel case-main">
         <div className="panel-header">
           <div>
-            <div className="eyebrow">{currentCase.id}</div>
+            <div className="eyebrow case-code">{currentCase.id}</div>
             <h2>{currentCase.title}</h2>
           </div>
-          <button className="small-button" onClick={resetCriminologyCase}>{t.reset}</button>
+          <button className="small-button" onClick={resetCriminologyCase}>
+            {t.reset}
+          </button>
         </div>
 
         <div className="profile-grid">
-          <div><span>Name</span><strong>{currentCase.profile.name}</strong></div>
-          <div><span>Age</span><strong>{currentCase.profile.age}</strong></div>
-          <div><span>Offense</span><strong>{currentCase.profile.offense}</strong></div>
+          <div>
+            <span>Name</span>
+            <strong>{currentCase.profile.name}</strong>
+          </div>
+          <div>
+            <span>Age</span>
+            <strong>{currentCase.profile.age}</strong>
+          </div>
+          <div>
+            <span>Offense</span>
+            <strong>{currentCase.profile.offense}</strong>
+          </div>
         </div>
 
         <p className="case-summary">{currentCase.profile.summary}</p>
+
         <h3>{t.interviewTitle}</h3>
         <p className="interview-text">
           {currentCase.interview.map((part, index) =>
             part.key ? (
-              <button key={`${part.key}-${index}`} className={`inline-clue ${collected[part.key] ? "is-collected" : ""}`} onClick={() => setSelectedClue(part.key)}>
+              <button
+                key={`${part.key}-${index}`}
+                className={`inline-clue ${collected[part.key] ? "is-collected" : ""}`}
+                onClick={() => setSelectedClue(part.key)}
+              >
                 {part.text}
               </button>
             ) : (
@@ -745,7 +801,13 @@ function CriminologyCase({ t, lang, currentCase, collected, collectedItems, sele
       </article>
 
       <aside className="paper-panel evidence-side">
-        <h2>{t.collectedEvidence}</h2>
+        <div className="evidence-header-row">
+          <h2>{t.collectedEvidence}</h2>
+          <span className="progress-badge">
+            {(t.clueProgress || (lang === "ko" ? "근거 수집 진행" : "Evidence Progress"))} {collectedItems.length}/{totalClues}
+          </span>
+        </div>
+
         <div className="evidence-board">
           {collectedItems.length === 0 ? (
             <p className="empty-note">{t.noEvidence}</p>
@@ -761,17 +823,35 @@ function CriminologyCase({ t, lang, currentCase, collected, collectedItems, sele
 
         <div className="theory-box">
           <h3>{t.selectTheory}</h3>
+          <p className="helper-note">
+            {allCluesCollected
+              ? (t.readyToChoose || (lang === "ko" ? "이제 이론을 선택할 수 있습니다." : "You can now choose a theory."))
+              : (t.allEvidenceNeeded || (lang === "ko" ? "모든 근거를 수집한 뒤 이론을 선택할 수 있습니다." : "Collect all clues before choosing a theory."))}
+          </p>
           <div className="theory-options">
             {Object.entries(currentCase.theories).map(([key, theory]) => (
-              <label key={key} className="radio-row">
-                <input type="radio" name="theory" checked={selectedTheory === key} onChange={() => setSelectedTheory(key)} />
+              <label
+                key={key}
+                className={`radio-row ${!allCluesCollected ? "is-disabled" : ""}`}
+              >
+                <input
+                  type="radio"
+                  name="theory"
+                  checked={selectedTheory === key}
+                  onChange={() => setSelectedTheory(key)}
+                  disabled={!allCluesCollected}
+                />
                 <span>{theory.name}</span>
               </label>
             ))}
           </div>
         </div>
 
-        <button className="primary-button" disabled={collectedItems.length === 0 || !selectedTheory} onClick={() => setShowResult(true)}>
+        <button
+          className="primary-button"
+          disabled={!allCluesCollected || !selectedTheory}
+          onClick={() => setShowResult(true)}
+        >
           {t.analyze}
         </button>
       </aside>
@@ -805,75 +885,117 @@ function CluePaper({ t, clueKey, clue, collectedOption, wrongChoice, onSelect, o
   );
 }
 
-function ResultPanel({ t, lang, theories, selectedTheory, bestTheory, collectedItems }) {
-  const userTheory = theories[selectedTheory];
-  const scoreMap = collectedItems.reduce((acc, item) => {
-    acc[item.theory] = (acc[item.theory] || 0) + 1;
-    return acc;
-  }, {});
-  const total = collectedItems.length || 1;
-  const theoryEntries = Object.entries(theories)
-    .map(([key, theory]) => ({ key, ...theory, count: scoreMap[key] || 0, percent: Math.round(((scoreMap[key] || 0) / total) * 100) }))
-    .filter((item) => item.count > 0);
-  const isCorrect = bestTheory && selectedTheory === bestTheory.key;
+function ResultPanel({ t, lang, caseData, selectedTheory }) {
+  const theoryEntries = Object.entries(caseData.expectedTheoryWeights)
+    .filter(([, percent]) => percent > 0)
+    .map(([key, percent]) => ({ key, percent, ...caseData.theories[key] }));
+
+  const bestTheory = { key: caseData.bestTheoryKey, ...caseData.theories[caseData.bestTheoryKey] };
+  const userTheory = caseData.theories[selectedTheory];
+  const isCorrect = selectedTheory === caseData.bestTheoryKey;
+
+  const allEvidence = getCorrectEvidenceItems(caseData);
+  const bestTheoryEvidence = allEvidence.filter((item) => item.theory === caseData.bestTheoryKey);
+  const selectedTheoryEvidence = allEvidence.filter((item) => item.theory === selectedTheory);
 
   return (
-    <article className="result-panel">
+    <article className="result-panel report-result-panel">
       <h2>{t.resultTitle}</h2>
 
-      {bestTheory && (
-        <section className="result-block primary-result">
-          <h3>{t.bestTheory}: {bestTheory.name}</h3>
-          <p>{bestTheory.explanation}</p>
-          <p className="result-reason">
-            {lang === "ko" ? "이 사례에서 수집된 근거들이 가장 많이 연결되는 이론입니다." : "This is the theory most strongly connected to the evidence collected in this case."}
-          </p>
-        </section>
-      )}
+      <section className="result-section best-section">
+        <div className="section-chip">
+          {t.correctAnswerSection || (lang === "ko" ? "정답 이론 설명" : "Best-Fitting Theory")}
+        </div>
 
-      <section className="result-block chart-section">
-        <h3>{t.theoryWeight}</h3>
-        <div className="chart-layout">
-          <PieChart entries={theoryEntries} />
-          <div className="chart-legend">
-            {theoryEntries.map((entry, index) => (
-              <div key={entry.key}>
-                <span className={`legend-dot color-${index}`} />
-                <strong>{entry.name}</strong>
-                <em>{entry.percent}%</em>
+        <div className="report-summary-grid">
+          <div className="report-main-copy">
+            <h3>{t.bestTheory}: {bestTheory.name}</h3>
+            <p>{bestTheory.explanation}</p>
+            <p className="result-reason">
+              {t.theoryResultReason ||
+                (lang === "ko"
+                  ? "이 사례에서 가장 많은 핵심 단서를 설명하는 이론입니다."
+                  : "This theory explains the largest share of the key clues in this case.")}
+            </p>
+          </div>
+
+          <div className="chart-card">
+            <h4>{t.theoryWeight}</h4>
+            <div className="chart-layout compact-chart">
+              <PieChart entries={theoryEntries} />
+              <div className="chart-legend compact-legend">
+                {theoryEntries.map((entry, index) => (
+                  <div key={entry.key} className="legend-row">
+                    <span className={`legend-dot color-${index}`} />
+                    <span className="legend-label">{entry.name}</span>
+                    <span className="legend-value">{entry.percent}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="support-panel">
+          <h4>{t.evidenceMap}</h4>
+          <div className="evidence-map">
+            {bestTheoryEvidence.map((item) => (
+              <div key={item.clueKey} className="evidence-map-item">
+                <strong>{item.label}</strong>
+                <p>{item.explanation}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
 
-      <section className={`judgement-card ${isCorrect ? "correct" : "partial"}`}>
-        <span>{isCorrect ? t.appropriateChoice : t.compareChoice}</span>
+      <section className={`result-section choice-section ${isCorrect ? "correct" : "partial"}`}>
+        <div className="section-chip">
+          {t.selectedAnswerSection || (lang === "ko" ? "선택한 답안 분석" : "Review of Your Selected Answer")}
+        </div>
+
         <h3>{t.yourChoice}: {userTheory?.name}</h3>
+
         {isCorrect ? (
-          <p>{lang === "ko" ? "당신이 선택한 이론은 수집된 근거와 가장 잘 일치합니다." : "Your selected theory matches the collected evidence best."}</p>
+          <p>
+            {lang === "ko"
+              ? "당신이 선택한 이론은 이 사례의 핵심 단서들과 가장 잘 일치합니다."
+              : "Your selected theory matches the core clues of this case best."}
+          </p>
+        ) : selectedTheoryEvidence.length > 0 ? (
+          <>
+            <p>
+              {t.partialSupport ||
+                (lang === "ko"
+                  ? "이 이론도 일부 단서를 설명할 수 있지만, 사례 전체를 가장 잘 설명하는 이론은 아닙니다."
+                  : "This theory explains some clues, but it is not the best overall explanation.")}
+            </p>
+            <div className="selected-evidence-list">
+              <strong>{lang === "ko" ? "설명 가능한 단서" : "Clues it can explain"}</strong>
+              <ul>
+                {selectedTheoryEvidence.map((item) => (
+                  <li key={item.clueKey}>{item.label}</li>
+                ))}
+              </ul>
+            </div>
+          </>
         ) : (
-          <p>{lang === "ko" ? `${userTheory?.name}도 일부 단서를 설명할 수 있지만, 현재 수집된 근거의 비중상 ${bestTheory?.name}이 더 적합합니다.` : `${userTheory?.name} can explain some clues, but based on the collected evidence, ${bestTheory?.name} is more fitting.`}</p>
+          <p>
+            {t.unsupported ||
+              (lang === "ko"
+                ? "이 이론은 이 사례의 핵심 단서를 충분히 설명하지 못합니다."
+                : "This theory does not sufficiently explain the core clues in this case.")}
+          </p>
         )}
       </section>
 
-      <section className="result-block">
-        <h3>{t.evidenceMap}</h3>
-        <div className="evidence-map">
-          {collectedItems.map((item) => (
-            <div key={item.clueKey} className="evidence-map-item">
-              <strong>{item.label}</strong>
-              <p>{item.explanation}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="result-block reference-block">
-        <h3>{t.sourceTitle}</h3>
+      <section className="result-section reference-block">
+        <div className="section-chip">{t.sourceTitle}</div>
         <ul className="source-list left-source-list">
-          {Object.entries(theories).map(([key, theory]) => (
-            <li key={key}><strong>{theory.scholar}</strong> — {theory.source}</li>
+          {Object.entries(caseData.theories).map(([key, theory]) => (
+            <li key={key}>
+              <strong>{theory.scholar}</strong> — {theory.source}
+            </li>
           ))}
         </ul>
       </section>
@@ -972,17 +1094,56 @@ function StatGraph({ type }) {
   );
 }
 
-function MethodsBook({ quiz, methodChoice, setMethodChoice, lang }) {
+function MethodsBook({ quiz, methodChoice, setMethodChoice, lang, t, onReset }) {
   const isCorrect = methodChoice === quiz.answer;
   return (
     <section className="paper-panel">
-      <div className="panel-header"><div><div className="eyebrow">Research Methods</div><h2>{lang === "ko" ? "분석방법 선택 훈련" : "Choosing an Analysis Method"}</h2></div></div>
+      <div className="panel-header">
+        <div>
+          <h2>{lang === "ko" ? "분석방법 선택 훈련" : "Choosing an Analysis Method"}</h2>
+        </div>
+        <button className="small-button" onClick={onReset}>
+          {t.reset}
+        </button>
+      </div>
+
       <div className="method-question">
         <h3>{quiz.question}</h3>
-        <div className="variable-list">{quiz.variables.map((variable) => <div key={variable}>{variable}</div>)}</div>
-        <div className="option-grid">{quiz.options.map((option) => <button key={option} className={`option-button ${methodChoice === option ? "is-selected" : ""}`} onClick={() => setMethodChoice(option)}>{option}</button>)}</div>
-        {methodChoice && !isCorrect && <div className="feedback-box incorrect"><h3>{lang === "ko" ? "다시 생각해보세요." : "Think again."}</h3><p>{lang === "ko" ? "종속변수의 형태와 연구질문을 다시 확인해보세요." : "Check the dependent variable type and the research question again."}</p></div>}
-        {methodChoice && isCorrect && <div className="feedback-box correct"><h3>{lang === "ko" ? "적절한 선택입니다." : "Good choice."}</h3><p>{quiz.explanation}</p></div>}
+        <div className="variable-list">
+          {quiz.variables.map((variable) => (
+            <div key={variable}>{variable}</div>
+          ))}
+        </div>
+
+        <div className="option-grid">
+          {quiz.options.map((option) => (
+            <button
+              key={option}
+              className={`option-button ${methodChoice === option ? "is-selected" : ""}`}
+              onClick={() => setMethodChoice(option)}
+            >
+              {option}
+            </button>
+          ))}
+        </div>
+
+        {methodChoice && !isCorrect && (
+          <div className="feedback-box incorrect">
+            <h3>{lang === "ko" ? "다시 생각해보세요." : "Think again."}</h3>
+            <p>
+              {lang === "ko"
+                ? "종속변수의 형태와 연구질문을 다시 확인해보세요."
+                : "Check the dependent variable type and the research question again."}
+            </p>
+          </div>
+        )}
+
+        {methodChoice && isCorrect && (
+          <div className="feedback-box correct">
+            <h3>{lang === "ko" ? "적절한 선택입니다." : "Good choice."}</h3>
+            <p>{quiz.explanation}</p>
+          </div>
+        )}
       </div>
     </section>
   );
